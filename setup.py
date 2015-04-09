@@ -28,6 +28,8 @@ setuptools.setup(
     install_requires=[
         'Flask',
         'Pillow',
+        'boto',
+        'url-for-s3',
     ],
 
     classifiers=[
