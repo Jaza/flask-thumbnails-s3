@@ -76,7 +76,7 @@ class Thumbnail(object):
         except IOError:
             return ''
 
-        img = _thumbnail_resize(self, image, thumb_size, crop=crop, bg=bg)
+        img = self._thumbnail_resize(self, image, thumb_size, crop=crop, bg=bg)
 
         img.save(thumb_filename, image.format, quality=quality)
 
@@ -116,7 +116,7 @@ class Thumbnail(object):
         except Exception:
             return ''
 
-        img = _thumbnail_resize(self, image, thumb_size, crop=crop, bg=bg)
+        img = self._thumbnail_resize(self, image, thumb_size, crop=crop, bg=bg)
 
         temp_file = BytesIO()
         img.save(temp_file, image.format, quality=quality)
