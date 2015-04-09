@@ -1,0 +1,1 @@
+include LICENSE README.rst flask_thumbnails_s3/*.py
