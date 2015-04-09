@@ -1,6 +1,7 @@
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 import errno
+import httplib2
 from io import BytesIO
 import os
 import re
@@ -100,9 +101,15 @@ class Thumbnail(object):
             filename=self._get_s3_path(original_filename).replace('static/', ''),
             scheme=scheme)
 
-        # Return the thumbnail URL now if it already exists on S3
+        # Return the thumbnail URL now if it already exists on S3.
+        # HTTP HEAD request saves us actually downloading the image
+        # for this check.
+        # Thanks to:
+        # http://stackoverflow.com/a/16778749/2066849
         try:
-            urllib.urlopen(urllib.Request(thumb_url_full))
+            resp = httplib2.Http().request(thumb_url_full, 'HEAD')
+            resp_status = int(resp[0]['status'])
+            assert(resp_status < 400)
             return thumb_url_full
         except Exception:
             pass
