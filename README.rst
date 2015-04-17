@@ -46,6 +46,9 @@ Use in Jinja2 template:
     <img src="{{ 'image.jpg'|thumbnail('200x200', crop='fit', quality=100) }}" alt="" />
 
 
+For a complete, working Flask app that demonstrates flask-thumbnails-s3 in action, have a look at `flask-s3-save-example <https://github.com/Jaza/flask-s3-save-example>`_.
+
+
 Options
 ~~~~~~~
 
