@@ -1,4 +1,4 @@
-__version__ = '0.1.4'
+__version__ = '0.1.5'
 
 import errno
 import httplib2
@@ -37,6 +37,10 @@ class Thumbnail(object):
 
         if self.app.config.get('MEDIA_THUMBNAIL_FOLDER', None) and not self.app.config.get('MEDIA_THUMBNAIL_URL', None):
             raise RuntimeError('You\'re set MEDIA_THUMBNAIL_FOLDER setting, need set and MEDIA_THUMBNAIL_URL setting.')
+
+        if not self.app.config.get('THUMBNAIL_S3_BUCKET_NAME', None):
+            raise RuntimeError('You\'re using the flask-thumbnail-s3 app '
+                               'without having set the required THUMBNAIL_S3_BUCKET_NAME setting.')
 
         app.config.setdefault('MEDIA_THUMBNAIL_FOLDER', os.path.join(self.app.config['MEDIA_FOLDER'], ''))
         app.config.setdefault('MEDIA_URL', '/')
@@ -92,7 +96,7 @@ class Thumbnail(object):
 
         thumb_url_full = url_for_s3(
             'static',
-            bucket_name=bucket_name,
+            bucket_name=self.app.config.get('THUMBNAIL_S3_BUCKET_NAME'),
             filename=thumb_url,
             scheme=scheme)
         original_url_full = url_for_s3(
@@ -129,7 +133,7 @@ class Thumbnail(object):
         img.save(temp_file, image.format, quality=quality)
 
         conn = S3Connection(self.app.config.get('THUMBNAIL_S3_ACCESS_KEY_ID'), self.app.config.get('THUMBNAIL_S3_ACCESS_KEY_SECRET'))
-        bucket = conn.get_bucket(bucket_name)
+        bucket = conn.get_bucket(self.app.config.get('THUMBNAIL_S3_BUCKET_NAME'))
 
         path = self._get_s3_path(thumb_filename)
         k = bucket.new_key(path)
